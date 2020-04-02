@@ -33,8 +33,11 @@ fun <T: Any> createInstancesOfClassesImplementing(classloader: ClassLoader, claz
  */
 @StubOutForDJVM
 fun <T: Any> getNamesOfClassesImplementing(classloader: ClassLoader, clazz: Class<T>): Set<String> {
-    return ClassGraph().overrideClassLoaders(classloader)
-        .enableURLScheme(attachmentScheme)
+    return ClassGraph().apply {
+            if (classloader !== ClassLoader.getSystemClassLoader()) {
+                overrideClassLoaders(classloader)
+            }
+        }.enableURLScheme(attachmentScheme)
         .ignoreParentClassLoaders()
         .enableClassInfo()
         .pooledScan()
